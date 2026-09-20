@@ -23,10 +23,36 @@ const app = express();
 
 // Security & middleware
 app.use(helmet({ crossOriginResourcePolicy: false }));
+// Dynamic CORS for production, Vercel preview URLs, and local dev
 app.use(
   cors({
-    origin: [config.clientUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, Postman, serverless internal)
+      if (!origin) return callback(null, true);
+      
+      const allowedOrigins = [
+        config.clientUrl,
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'http://localhost:3000',
+        'http://localhost:5000',
+      ];
+
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.onrender.com') ||
+        config.nodeEnv === 'development'
+      ) {
+        return callback(null, true);
+      }
+      
+      // Allow all origins by default for public API access
+      return callback(null, true);
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
 app.use(express.json({ limit: '10mb' }));

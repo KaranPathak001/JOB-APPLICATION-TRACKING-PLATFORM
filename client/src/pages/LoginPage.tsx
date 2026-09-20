@@ -22,7 +22,11 @@ export const LoginPage: React.FC = () => {
         navigate('/app/dashboard');
       }
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || 'Invalid email or password');
+      if (err.message === 'Network Error' || !err.response) {
+        setErrorMsg('Unable to connect to backend server. Please verify your connection or backend deployment.');
+      } else {
+        setErrorMsg(err.response?.data?.message || 'Invalid email or password');
+      }
     }
   };
 

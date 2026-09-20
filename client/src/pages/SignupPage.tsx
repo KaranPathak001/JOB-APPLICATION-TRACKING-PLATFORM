@@ -21,7 +21,11 @@ export const SignupPage: React.FC = () => {
         navigate('/onboarding');
       }
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || 'Registration failed. Please try again.');
+      if (err.message === 'Network Error' || !err.response) {
+        setErrorMsg('Unable to connect to backend server. Please verify your connection or backend deployment.');
+      } else {
+        setErrorMsg(err.response?.data?.message || 'Registration failed. Please try again.');
+      }
     }
   };
 
