@@ -105,7 +105,7 @@ export const AssistantPage: React.FC = () => {
             <span>AI Job Search Assistant</span>
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Powered by Google Gemini with live context over your tracked applications.
+            Powered by OpenRouter AI with live context over your tracked applications.
           </p>
         </div>
       </div>

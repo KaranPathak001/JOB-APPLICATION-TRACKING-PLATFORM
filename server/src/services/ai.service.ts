@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { GeminiProvider } from '../integrations/gemini/gemini.provider.js';
+import { OpenRouterProvider } from '../integrations/openrouter/openrouter.provider.js';
 import { Application } from '../models/Application.js';
 import { Interview } from '../models/Interview.js';
 import { Task } from '../models/Task.js';
@@ -75,14 +75,14 @@ ${jobDescription}
     };
 
     try {
-      const rawData = await GeminiProvider.generateJson<IExtractedJob>(prompt, fallback);
+      const rawData = await OpenRouterProvider.generateJson<IExtractedJob>(prompt, fallback);
       const validated = ExtractedJobSchema.parse(rawData);
 
       // Audit log
       await AIProcessingLog.create({
         userId,
-        provider: 'Google Gemini',
-        aiModel: 'gemini-1.5-flash',
+        provider: 'OpenRouter',
+        aiModel: 'openrouter-chat',
         operation: 'PARSE_JOB_DESCRIPTION',
         status: 'SUCCESS',
         confidence: 0.95,
@@ -157,7 +157,7 @@ Guidelines:
     };
 
     try {
-      const text = await GeminiProvider.generateText(prompt, fallbackResponse());
+      const text = await OpenRouterProvider.generateText(prompt, fallbackResponse());
       
       const actions: { label: string; url: string }[] = [];
       if (query.toLowerCase().includes('interview')) {

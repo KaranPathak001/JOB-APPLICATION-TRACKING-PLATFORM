@@ -6,7 +6,7 @@ import { ApplicationEvent } from '../../models/ApplicationEvent.js';
 import { Interview } from '../../models/Interview.js';
 import { DeterministicEmailParser } from './deterministic.parser.js';
 import { DeduplicationMatcher } from './deduplication.matcher.js';
-import { GeminiProvider } from '../gemini/gemini.provider.js';
+import { OpenRouterProvider } from '../openrouter/openrouter.provider.js';
 
 export class GmailService {
   private static getOAuth2Client() {
@@ -66,7 +66,7 @@ Extract JSON matching:
 }
 `;
       try {
-        const aiResult: any = await GeminiProvider.generateJson(prompt, () => ({
+        const aiResult: any = await OpenRouterProvider.generateJson(prompt, () => ({
           isJobRelated: true,
           company: 'Tech Partner Corp',
           role: 'Full Stack Engineer',

@@ -52,7 +52,7 @@ export const Sidebar: React.FC<{ onAddApplication: () => void; isMobileOpen: boo
 
   const automationItems: NavItem[] = [
     { label: 'Email Sync', path: '/app/automation', icon: Mail, badge: 'Live' },
-    { label: 'AI Assistant', path: '/app/assistant', icon: Bot, badge: 'Gemini' },
+    { label: 'AI Assistant', path: '/app/assistant', icon: Bot, badge: 'AI' },
   ];
 
   const handleLogout = () => {

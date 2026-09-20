@@ -133,7 +133,7 @@ export const AddApplicationModal: React.FC<AddApplicationModalProps> = ({ isOpen
           {activeTab === 'ai' && (
             <div className="space-y-3">
               <div className="p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-700 dark:text-sky-300">
-                ✨ <strong>Paste a job description from LinkedIn, Indeed, or company careers page.</strong> Gemini AI will automatically extract the company, role, salary range, location, and key skills.
+                ✨ <strong>Paste a job description from LinkedIn, Indeed, or company careers page.</strong> AI will automatically extract the company, role, salary range, location, and key skills.
               </div>
               <textarea
                 rows={7}
@@ -152,7 +152,7 @@ export const AddApplicationModal: React.FC<AddApplicationModalProps> = ({ isOpen
                 {isExtracting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Extracting with Gemini AI...</span>
+                    <span>Extracting with AI...</span>
                   </>
                 ) : (
                   <>
