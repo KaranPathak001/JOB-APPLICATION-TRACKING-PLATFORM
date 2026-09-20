@@ -1,133 +1,203 @@
-# JobFlow AI 🚀
-### Intelligent AI-Powered Job Application Tracker & Career Command Center
+# JobFlow
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org/)
-[![React Version](https://img.shields.io/badge/react-18.3.1-61dafb)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/typescript-5.6.2-blue)](https://www.typescriptlang.org/)
-[![Powered by Gemini AI](https://img.shields.io/badge/AI-Google%20Gemini-orange)](https://deepmind.google/technologies/gemini/)
-
-JobFlow AI is a production-grade, full-stack career command center engineered to help job seekers take complete control over their job search lifecycle. It seamlessly combines manual & AI-assisted application tracking, automated Gmail ATS sync with deterministic regex parsing, multi-round interview scheduling with calendar views, funnel analytics, and an interactive Gemini AI Career Strategist.
+A full-stack career and job application tracking platform built with React, TypeScript, Node.js, Express, and MongoDB. Includes an interactive Kanban pipeline, calendar interview scheduler, conversion analytics, ATS email integration, and structured LLM-powered job extraction via OpenRouter.
 
 ---
 
-## ✨ Features & Capabilities
+## System Architecture
 
-### 1. 📊 Executive Command Center & Dashboard
-- **Real-time Pipeline KPIs**: Live stats for Total Applications, Active Pipeline, Interviews, and Offers with period-over-period delta trends.
-- **Conversion Funnel**: Track stage-by-stage progression (Applied ➔ Shortlisted ➔ Interview ➔ Offer) with automated drop-off calculation.
-- **AI Strategic Insights**: Contextual career recommendations generated directly from your active database records.
-- **Upcoming Interviews**: Integrated cards with countdowns and 1-click meeting access links.
-
-### 2. 🗂️ Application Pipeline & Interactive Kanban
-- **List & Table View**: Fast search with debouncing, status and work-mode filters, pagination, and instant CSV export.
-- **Drag-and-Drop Pipeline**: HTML5-powered Kanban board allowing real-time status transitions with automatic audit trail event logging.
-- **Application 360° Detail View**:
-  - Full audit timeline of all interactions.
-  - Timestamped notes and strategy scratchpads.
-  - Action item checklist with deadline tracking.
-  - In-app interview round scheduler.
-
-### 3. 🤖 Google Gemini AI Engine
-- **✨ Job Description Auto-Fill**: Paste any raw job description from LinkedIn, Indeed, or career portals. Gemini extracts Company, Role, Location, Salary Range, and Required Skills without manual entry.
-- **💬 AI Career Strategist**: Conversational assistant with live RAG context over your application pipeline to answer:
-  - *"Which companies haven't responded for >7 days?"*
-  - *"What interviews do I have scheduled this week?"*
-  - *"Generate technical preparation questions for my next interview."*
-
-### 4. ⚡ Gmail Automation & Deduplication Engine
-- **ATS Template Detection**: Deterministic parsing for Greenhouse, Lever, Workday, LinkedIn, and Ashby emails.
-- **Gemini Fallback Parser**: Robust extraction for unstructured recruiter reachouts.
-- **Fuzzy Deduplication**: Prevents multiple emails from the same recruiter/company from creating duplicate application entries.
-
-### 5. 📅 Calendar & Activity Audit Trail
-- **Interview Calendar**: Switch between Agenda Timeline and Month Grid views.
-- **Activity Feed**: Unified chronological log across all applications, email syncs, and AI extractions.
-
-### 6. 🚀 1-Click Instant Demo Sandbox
-- Pre-populated with 8+ applications across multiple stages, scheduled interview rounds, timeline events, and notes.
-
----
-
-## 🛠️ Architecture & Tech Stack
+JobFlow uses a decoupled client-server architecture organized into a monorepo structure.
 
 ```
-jobflow-ai/
-├── client/                     # Vite + React + TypeScript + Tailwind CSS + Lucide + Recharts
-│   ├── src/
-│   │   ├── api/                # Axios instance with JWT interceptors
-│   │   ├── components/         # Layout, Sidebar, Topbar, Modals
-│   │   ├── context/            # AuthContext, ThemeContext
-│   │   ├── layouts/            # AppLayout
-│   │   ├── pages/              # Dashboard, Applications, Pipeline, Calendar,
-│   │   │                       # Analytics, Activity, EmailSync, Assistant, Profile,
-│   │   │                       # LandingPage, LoginPage, SignupPage, OnboardingPage
-│   │   ├── types/              # Client TypeScript models
-│   │   └── utils/              # Formatters, status styling, CSV export
-└── server/                     # Node.js + Express + TypeScript + Mongoose
-    ├── src/
-    │   ├── config/             # DB connection, environment configuration
-    │   ├── controllers/        # Thin controllers
-    │   ├── middleware/         # Auth, ErrorHandler, Zod validation
-    │   ├── models/             # Mongoose schemas: User, Application, Event,
-    │   │                       # Interview, Task, Note, EmailMessage, AIProcessingLog
-    │   ├── routes/             # Express routes
-    │   ├── services/           # Business logic: App, AI, Analytics, Gmail, Seeder
-    │   ├── integrations/       # Gemini AI provider & deterministic ATS parsers
-    │   └── server.ts           # Server bootstrap
+┌─────────────────────────────────────────────────────────────┐
+│                      Frontend (Client)                      │
+│   React 18 • TypeScript • Tailwind CSS • React Query • Vite │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ HTTPS / JSON (REST + JWT)
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Backend (Server)                       │
+│        Node.js • Express • TypeScript • Zod Validation      │
+├──────────────────────────────┬──────────────────────────────┤
+│       Business Services      │        Integrations          │
+│ • Application / Kanban       │ • OpenRouter API (LLM)       │
+│ • Interview Scheduler        │ • Gmail API / ATS Parser     │
+│ • Analytics & Timeline       │ • OAuth2 / Google API        │
+└──────────────────────────────┴──────────────────────────────┘
+                               │ Mongoose ODM
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     MongoDB Database                        │
+│   Users • Applications • Interviews • Tasks • Events • Logs │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🚀 Quickstart & Installation
+## Core Features
+
+- **Application Pipeline & Kanban Board**: Full lifecycle tracking (`Applied`, `Shortlisted`, `Interview`, `Offer`, `Rejected`, `Withdrawn`) with HTML5 drag-and-drop state transitions.
+- **Detailed Application Management**: Sub-resource tracking for timestamped notes, activity audit timelines, and actionable tasks with due dates.
+- **Interview Scheduling**: Multi-round interview tracking (`Screening`, `Technical`, `System Design`, `Behavioral`, `Manager`, `Final`) with agenda and monthly calendar grid views.
+- **Funnel & Pipeline Analytics**: Recharts-powered stage conversion rates, drop-off ratios, weekly application velocity, and status breakdowns.
+- **ATS Email Ingestion & Parsing**: Deterministic regex-based classification for major ATS platforms (Greenhouse, Lever, Workday, Ashby) with fuzzy deduplication to prevent duplicate entries.
+- **LLM-Powered Extraction (OpenRouter)**: Zero-shot extraction of job descriptions into structured JSON schemas (Company, Role, Salary Range, Skills, Location) and context-aware career assistant.
+- **Export & Import**: Instant CSV export and bulk-import parsing for pipeline data portability.
+
+---
+
+## Engineering Highlights & Design Decisions
+
+1. **Layered Backend Architecture**: Strict separation of concerns (`Routes` ➔ `Middleware` ➔ `Controllers` ➔ `Services` ➔ `Models`), preventing business logic leakage into HTTP handlers.
+2. **Deterministic-First ATS Parsing**: Incoming emails are first evaluated against high-precision regex templates before falling back to LLM completion, minimizing external API costs and latency.
+3. **Resilient Database Layer**: Configured with connection state management, timeout thresholds, and in-memory mock fallback mode to prevent server crashes in local or offline development.
+4. **End-to-End Type Safety**: Shared Zod schemas on the backend ensure request validation at runtime while mirroring TypeScript interfaces on the client.
+5. **Secure Authentication**: Bcrypt-hashed credentials (salt rounds: 10) paired with signed JWTs (7-day expiry) verified on protected endpoints via Express middleware.
+
+---
+
+## Tech Stack
+
+### Client
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS, Lucide Icons
+- **State & Data Fetching**: TanStack React Query v5, Axios (with JWT interceptors)
+- **Visualizations**: Recharts
+- **Utilities**: Papaparse (CSV), date-fns
+
+### Server
+- **Runtime & Framework**: Node.js, Express (ES Modules)
+- **Language**: TypeScript 5.6
+- **Database & ODM**: MongoDB, Mongoose 8.x
+- **Validation**: Zod
+- **Security**: Helmet, CORS, Express Rate Limit, Bcrypt.js, JsonWebToken
+- **Integrations**: OpenRouter API (`fetch`), Google APIs (`googleapis`)
+
+---
+
+## Getting Started
 
 ### Prerequisites
-- Node.js (v18 or v20+)
-- MongoDB (local or MongoDB Atlas connection string)
-- (Optional) Google Gemini API Key
+- Node.js 18.x or 20.x+
+- MongoDB instance (local or MongoDB Atlas connection string)
+- *(Optional)* OpenRouter API key for LLM job parsing and AI assistant features
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/jobflow-ai.git
-cd jobflow-ai
+git clone https://github.com/KaranPathak001/JOB-APPLICATION-TRACKING-PLATFORM.git
+cd JOB-APPLICATION-TRACKING-PLATFORM
 ```
 
-### 2. Configure Backend Environment
-Create `server/.env`:
+### 2. Configure Environment Variables
+
+Create `server/.env` based on the provided example:
+
+```bash
+cp server/.env.example server/.env
+```
+
+Edit `server/.env`:
 ```env
 PORT=5000
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
 MONGODB_URI=mongodb://127.0.0.1:27017/jobflow_ai
 JWT_SECRET=your_jwt_secret_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+OPENROUTER_MODEL=openai/gpt-4o-mini
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=http://localhost:5000/api/gmail/callback
 ```
 
-### 3. Install & Start Backend
+### 3. Verify Database & Integrations
+Before launching, you can run the built-in diagnostic scripts:
+
 ```bash
 cd server
 npm install
-npm run dev
+
+# Test database connection, latency, and read/write integrity
+npm run test:db
+
+# Audit all environment variables and external service endpoints
+npm run check:connections
 ```
 
-### 4. Install & Start Frontend Client
+### 4. Run Locally
+
+**Start Backend:**
+```bash
+cd server
+npm run dev
+```
+*Server starts on `http://localhost:5000`.*
+
+**Start Frontend:**
 ```bash
 cd client
 npm install
 npm run dev
 ```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
----
-
-## 🔒 Security & Best Practices
-- Strict JWT authentication with bcrypt password hashing.
-- Request payload validation using Zod.
-- Helmet security headers and API rate limiting.
-- Protected user ownership checks on all resource mutations.
+*Client starts on `http://localhost:5173`.*
 
 ---
 
-## 📄 License
-This project is open-source and available under the [MIT License](LICENSE).
+## API Reference
+
+### Auth
+- `POST /api/auth/register` - Create user account
+- `POST /api/auth/login` - Authenticate and receive JWT
+- `GET /api/auth/me` - Get current session profile
+- `PATCH /api/auth/preferences` - Update user settings
+
+### Applications & Sub-Resources
+- `GET /api/applications` - List applications (supports search, filters, pagination)
+- `POST /api/applications` - Create application
+- `GET /api/applications/:id` - Fetch single application
+- `PATCH /api/applications/:id` - Update application details
+- `PATCH /api/applications/:id/status` - Fast status update (Kanban transitions)
+- `DELETE /api/applications/:id` - Remove application
+- `POST /api/applications/bulk-import` - Bulk import applications via CSV
+- `GET /api/applications/:id/events` - Get application audit timeline
+- `POST /api/applications/:id/events` - Append custom timeline event
+- `GET /api/applications/:id/notes` - Get application notes
+- `POST /api/applications/:id/notes` - Add application note
+- `DELETE /api/applications/:id/notes/:noteId` - Remove note
+
+### Interviews & Tasks
+- `GET /api/interviews` - List upcoming and past interview rounds
+- `POST /api/interviews` - Schedule an interview round
+- `PATCH /api/interviews/:id` - Update interview round
+- `DELETE /api/interviews/:id` - Delete interview round
+- `GET /api/tasks` - List tasks and action items
+- `POST /api/tasks` - Create task
+- `PATCH /api/tasks/:id` - Update / toggle task completion
+- `DELETE /api/tasks/:id` - Delete task
+
+### Analytics & AI
+- `GET /api/analytics/dashboard` - High-level metrics and active pipeline summary
+- `GET /api/analytics/overview` - Funnel conversion and distribution data
+- `GET /api/analytics/activity` - Chronological activity feed
+- `POST /api/ai/parse-job` - Extract structured fields from raw job description text
+- `POST /api/ai/assistant` - Career assistant chat query
+
+---
+
+## Database Schema Overview
+
+```
+User (id, name, email, passwordHash, preferences)
+  └── Application (id, userId, company, role, status, salaryMin, salaryMax, location, workMode, jobUrl, appliedDate)
+        ├── Interview (id, applicationId, type, scheduledAt, roundNumber, meetingLink, notes)
+        ├── Note (id, applicationId, title, content, createdAt)
+        ├── Task (id, applicationId, title, dueDate, priority, completed)
+        └── ApplicationEvent (id, applicationId, type, description, source, timestamp)
+```
+
+---
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
